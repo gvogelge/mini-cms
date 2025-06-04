@@ -22,4 +22,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('posts', PostController::class)->except(['show', 'index']);
 });
 
+Route::get('/', [PostController::class, 'index'])->name('home');
+Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
+
 require __DIR__ . '/auth.php';
