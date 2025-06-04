@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mini_cms_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mini_cms
+      MYSQL_USER: cms_user
+      MYSQL_PASSWORD: cms_pass
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - mini_cms_net
+
+  adminer:
+    image: adminer
+    container_name: mini_cms_adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - mini_cms_net
+
+volumes:
+  mysql_data:
+
+networks:
+  mini_cms_net:
