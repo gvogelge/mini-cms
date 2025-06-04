@@ -4,12 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->route('home');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -22,7 +18,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('posts', PostController::class)->except(['show', 'index']);
 });
 
-Route::get('/', [PostController::class, 'index'])->name('home');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/', [PostController::class, 'index'])->name('home');
+});
 Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
 
 require __DIR__ . '/auth.php';
