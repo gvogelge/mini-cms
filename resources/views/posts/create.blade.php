@@ -1,26 +1,44 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2>Neuen Beitrag erstellen</h2>
-    </x-slot>
+    <div class="flex justify-center mt-10">
+        <div class="w-full max-w-2xl border border-black bg-white shadow px-8 py-6">
 
-    <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
-        @csrf
+            <h2 class="text-2xl font-semibold mb-6 text-center">Create New Post</h2>
 
-        <div>
-            <label for="title">Titel</label>
-            <input type="text" name="title" required>
+            <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data" class="space-y-6">
+                @csrf
+
+                <!-- Titel -->
+                <div>
+                    <label for="title" class="block text-black font-medium mb-1">Title</label>
+                    <input type="text" name="title" id="title"
+                    class="w-full border border-black px-4 py-2
+                            focus:outline-none focus:ring-0 focus:border-lime-600"
+                    required>
+                </div>
+
+                <!-- Inhalt -->
+                <div>
+                    <label for="content" class="block text-black font-medium mb-1">Content</label>
+                    <textarea name="content" id="content" rows="12"
+                              class="w-full border border-black px-4 py-2 resize-y focus:outline-none focus:ring-0 focus:border-lime-600"
+                              required></textarea>
+                </div>
+
+                <!-- Bild -->
+                <div>
+                    <label for="image" class="block text-black font-medium mb-1">Picture (optional)</label>
+                    <input type="file" name="image" id="image"
+                           class="w-full border border-black px-4 py-2 file:bg-lime-400 file:text-black file:border-0 hover:file:bg-lime-200 focus:outline-none focus:ring-0 focus:border-lime-600">
+                </div>
+
+                <!-- Submit -->
+                <div class="flex justify-end">
+                    <button type="submit"
+                            class="border border-black bg-lime-600 text-black px-6 py-2 hover:bg-lime-700 transition">
+                        Save
+                    </button>
+                </div>
+            </form>
         </div>
-
-        <div>
-            <label for="content">Inhalt</label>
-            <textarea name="content" required></textarea>
-        </div>
-
-        <div>
-            <label for="image">Bild (optional)</label>
-            <input type="file" name="image">
-        </div>
-
-        <button type="submit">Speichern</button>
-    </form>
+    </div>
 </x-app-layout>
