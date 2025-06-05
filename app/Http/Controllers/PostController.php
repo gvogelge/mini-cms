@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -37,19 +38,27 @@ class PostController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
-        $path = $request->file('image')?->store('images', 'public');
+        try {
+            $path = null;
 
-        $post = new Post();
-        $post->title = $validated['title'];
-        $post->content = $validated['content'];
-        $post->image_path = $path;
-        $post->user_id = auth()->id();
-        $post->save();
+            if ($request->hasFile('image')) {
+                $path = $request->file('image')->store('images', 'public');
+            }
 
-        return redirect()->route('dashboard')->with('success', 'Beitrag erstellt');
+            Post::create([
+                'title' => $validated['title'],
+                'content' => $validated['content'],
+                'image_path' => $path,
+                'user_id' => auth()->id(),
+            ]);
+
+            return redirect()->route('home')->with('success', 'Beitrag erstellt.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['image' => 'Bild konnte nicht gespeichert werden.'])->withInput();
+        }
     }
 
     /**
@@ -86,17 +95,27 @@ class PostController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
-        if ($request->file('image')) {
-            $path = $request->file('image')->store('images', 'public');
-            $post->image_path = $path;
+        try {
+            if ($request->hasFile('image')) {
+                if ($post->image_path) {
+                    Storage::disk('public')->delete($post->image_path);
+                }
+
+                $path = $request->file('image')->store('images', 'public');
+                $post->image_path = $path;
+            }
+
+            $post->title = $validated['title'];
+            $post->content = $validated['content'];
+            $post->save();
+
+            return redirect()->route('posts.edit', $post)->with('success', 'Beitrag aktualisiert.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['image' => 'Fehler beim Speichern des Bildes.'])->withInput();
         }
-
-        $post->update($validated);
-
-        return redirect()->route('posts.edit', $post)->with('success', 'Beitrag aktualisiert');
     }
 
     /**
