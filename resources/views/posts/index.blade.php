@@ -46,9 +46,10 @@
                         </div>
                     @endif
 
-                    <p class="text-sm text-gray-500 mt-4">
-                        Von: {{ $post->user?->name ?? 'Unbekannt' }}
-                    </p>
+                    <div class="flex justify-between items-center text-sm text-gray-500 mt-4">
+                        <p>Von: {{ $post->user?->name ?? 'Unbekannt' }}</p>
+                        <p>{{ $post->created_at->format('d.m.Y H:i') }}</p>
+                    </div>
                 </div>
             </div>
         @endforeach
