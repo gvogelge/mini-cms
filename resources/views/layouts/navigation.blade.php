@@ -11,7 +11,7 @@
 
                 @auth
                     <a href="{{ route('posts.create') }}" class="text-gray-700 hover:text-lime-500 font-medium transition">
-                        Beitrag erstellen
+                        New Post
                     </a>
                 @endauth
             </div>
@@ -33,7 +33,7 @@
 
                         <x-slot name="content">
                             <x-dropdown-link :href="route('profile.edit')">
-                                Profil
+                                Profile
                             </x-dropdown-link>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
